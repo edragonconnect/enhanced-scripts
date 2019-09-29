@@ -1,0 +1,8 @@
+excludes:
+  - project_42
+  - vendor
+only: hello
+src: apps
+clean_last_build: YES
+generate_source_map: NO
+dist: _build

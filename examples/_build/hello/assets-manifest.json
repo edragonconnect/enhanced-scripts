@@ -1,0 +1,8 @@
+{
+  "files": {
+    "main.css": "/_build/hello/css/main.css",
+    "main.js": "/_build/hello/js/main.js",
+    "hello/img/hello.jpg": "/_build/hello/img/hello.jpg",
+    "hello/img/sss.jss": "/_build/hello/img/sss.jss"
+  }
+}

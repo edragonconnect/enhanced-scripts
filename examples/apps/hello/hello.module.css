@@ -1,0 +1,7 @@
+.Hello {
+  display: flex;
+  height: 400px;
+  width: 300px;
+  background-size: cover;
+  background-image: url("./hello.jpg");
+}
