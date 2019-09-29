@@ -1,13 +1,19 @@
+const EnhancedVueLoaderPlugin = require("../../node_modules/scriptx/EnhancedVueLoaderPlugin");
+const path = require("path");
 module.exports = () => {
   return {
     webpack() {
       return {
-        module: {}
+        module: {
+          rules: [
+            {
+              test: /\.vue$/,
+              loader: require.resolve("vue-loader")
+            }
+          ]
+        },
+        plugins: [new EnhancedVueLoaderPlugin(require.resolve("vue-loader"))]
       };
     }
-    // postcss(postcss) {
-    //   console.log("hello/webpack.config/postcss", postcss);
-    //   return postcss;
-    // }
   };
 };

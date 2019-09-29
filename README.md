@@ -1,5 +1,16 @@
 # Enhanced Scripts
 
+### 项目结构
+
+    project_root
+    |-webpack.confi.js //如果有
+    |-<build-config>.yaml //如果有
+    |-<src_dir>
+    | |-<app_name>
+    | |--index.js
+    | |--package.json
+    | |--webpack.config.js //如果有
+
 ### 安装
 
 ```bash
@@ -57,7 +68,6 @@ module.exports = function({ name?, mode, firstCompilation }) {
   //name, 被拷贝的项目
   //mode, development | production
   //firstCompilation,  是否初次编译， producion mode永远是true
-
   //拷贝的逻辑
 };
 ```
@@ -75,11 +85,29 @@ module.exports = function({ name?, mode, firstCompilation }) {
 ### `webpack.config.js`
 
 ```javascript
+//如果使用了vue，需要显式声明vue-loader路径
+//将VueLoaderPlugin 替换为  EnhancedVueLoaderPlugin
+const EnhancedVueLoaderPlugin = require("<project_root>/node_modules/scriptx/EnhancedVueLoaderPlugin");
+// EnhancedVueLoaderPlugin接受一个参数 vueLoaderPath,即vue-loader所在的目录
+//  new EnhancedVueLoaderPlugin(vueLoaderPath)
+
 module.exports = mode => {
   return {
     webpack(mode) {
       //webpack configs
-      return {};
+      return {
+        //使用vue
+        module: {
+          rules: [
+            {
+              test: /\.vue$/,
+              loader: require.resolve("vue-loader")
+            }
+          ]
+        },
+        //使用 EnhancedVueLoaderPlugin
+        plugins: [new EnhancedVueLoaderPlugin(vueLoaderPath)]
+      };
     },
     babel(defaultBabelConfig) {
       //babel configs

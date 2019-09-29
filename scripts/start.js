@@ -1,10 +1,5 @@
 process.env.NODE_ENV = "development";
 process.env.BABEL_ENV = "development";
-process.on("unhandledRejection", err => {
-  if (err.name && err.name !== "compile_error") {
-    throw err;
-  }
-});
 const checkDependencies = require("../checkDependencies");
 const compile = require("../createCompiler");
 const createConfig = require("../createConfig");
@@ -13,6 +8,7 @@ const copyAssets = require("../copyAssets");
 const watcher = require("../watcher");
 const path = require("path");
 const paths = require("../config/paths");
+require("../config/env");
 checkDependencies("start").then(async apps => {
   let applications = await Promise.all(apps);
   applications = applications.map(app => ({
@@ -36,10 +32,12 @@ checkDependencies("start").then(async apps => {
           copyAssets({
             mode: "development",
             firstCompilation: false,
-            application: name
+            name: name
           });
           utils.ok("Watching files");
-        } catch (error) {}
+        } catch (error) {
+          Promise.reject(error);
+        }
       }
     }
   });
@@ -52,6 +50,7 @@ checkDependencies("start").then(async apps => {
         await compile(config, true);
       } catch (error) {
         hasFailedJob = true;
+        Promise.reject(error);
       }
       compilations += 1;
       if (compilations === applications.length) {
@@ -59,10 +58,12 @@ checkDependencies("start").then(async apps => {
           copyAssets({
             mode: "development",
             firstCompilation: true,
-            application: null
+            name: null
           });
+          utils.ok("Watching files");
+        } else {
+          utils.print(utils.chalk.red("Watching files"));
         }
-        utils.ok("Watching files");
       }
     });
   }

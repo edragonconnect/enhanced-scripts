@@ -1,7 +1,7 @@
 const Watchpack = require("watchpack");
 const patterns = {
   node_modules: "node_modules/**",
-  webpack: "webpack.*",
+  webpack: "webpack.config.js",
   postcss: "postcss.*",
   babel: "babel.*",
   yarn: "yarn.*",

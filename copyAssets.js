@@ -4,11 +4,11 @@ let setupCopyAssets = null;
 if (utils.dryRequire(paths.setupCopyAssets)) {
   setupCopyAssets = require(paths.setupCopyAssets);
 }
-module.exports = function copyAssets({ mode, application, firstCompilation }) {
+module.exports = function copyAssets({ mode, name, firstCompilation }) {
   if (typeof setupCopyAssets === "function") {
     setupCopyAssets({
       mode,
-      name: application && application.name,
+      name: name,
       firstCompilation
     });
   }

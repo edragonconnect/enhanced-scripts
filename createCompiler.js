@@ -1,34 +1,49 @@
-const {
-  builtMessage,
-  failedMessage,
-  formatWebpackStatsError
-} = require("./displayBuildMessage");
+process.on("unhandledRejection", err => {
+  if (err.name && err.name !== "compile_error") {
+    throw err;
+  }
+});
+const printBuildInfo = require("./printFormattedWebpackMessages");
 const path = require("path");
 const webpack = require("webpack");
+const formatWebpackMessages = require("./formatWebpackMessages");
 module.exports = async function createCompiler(config) {
   const compiler = webpack(config);
   const dirname = path.dirname(config.entry);
-  const basename = path.basename(dirname);
+  const name = path.basename(dirname);
   return new Promise((resolve, reject) => {
     compiler.run((error, stats) => {
-      const formattdError = formatWebpackStatsError(
-        error,
-        stats.toJson({ all: false, warnings: false, errors: true })
-      );
-      if (formattdError) {
-        return reject(formattdError);
+      let messages;
+      if (error) {
+        if (!error.message) {
+          return reject(error);
+        }
+        messages = formatWebpackMessages({
+          errors: [error.message],
+          warnings: []
+        });
+      } else {
+        messages = formatWebpackMessages(
+          stats.toJson({
+            all: false,
+            warnings: false,
+            errors: true
+          })
+        );
       }
-      return resolve(stats);
-    });
-  })
-    .then(stats => {
-      builtMessage(basename, stats, config.mode === "production");
-    })
-    .catch(error => {
-      failedMessage(basename, error);
-      if (error.name !== "WebpackOptionsValidationError") {
+      if (messages.errors.length) {
+        // Only keep the first error. Others are often indicative
+        // of the same problem, but confuse the reader with noise.
+        if (messages.errors.length > 1) {
+          messages.errors.length = 1;
+        }
+        error = new Error(messages.errors.join("\n\n"));
+      }
+      if (error && error.name !== "WebpackOptionsValidationError") {
         error.name = "compile_error";
       }
-      return Promise.reject(error);
+      printBuildInfo(stats, error, name);
+      return error ? reject(error) : resolve(stats);
     });
+  });
 };

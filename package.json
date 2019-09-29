@@ -1,6 +1,6 @@
 {
   "name": "scriptx",
-  "version": "1.1.18",
+  "version": "1.1.20",
   "main": "index.js",
   "dependencies": {
     "@babel/core": "7.5.5",
@@ -52,8 +52,7 @@
     "webpack-cli": "3.3.7",
     "webpack-manifest-plugin": "2.0.4",
     "webpack-merge": "4.2.2",
-    "yaml": "1.6.0",
-    "promise.prototype.finally": "3.1.1"
+    "yaml": "1.6.0"
   },
   "bin": {
     "scriptx": "./bin/scriptx.js"

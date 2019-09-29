@@ -2,8 +2,8 @@ module.exports = () => {
   return {
     webpack() {
       return {
-        module: {
-          // rules: []
+        resolve: {
+          extensions: [".vue"]
         }
       };
     },
@@ -18,7 +18,6 @@ module.exports = () => {
       };
 
       // console.log("example/webpack/postcss", result);
-
       return result;
       // return result;
     }
