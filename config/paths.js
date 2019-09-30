@@ -71,18 +71,26 @@ function getBuildConfig() {
       }
     } catch (error) {}
   }
-  config.src = resolveApp(config.src);
-  config.dist = resolveApp(config.dist);
+  let rawSrc = config.src;
+
   let ignore = getIgnoredPaths(appPackageJson);
 
   if (ignore.length) {
-    config.ignore = ignore.map(ignore => resolveApp(ignore));
+    config.ignore = ignore.map(ignore => {
+      if (ignore.includes(rawSrc)) {
+        return resolveApp(ignore);
+      }
+      return path.resolve(appDirectory, rawSrc, ignore);
+    });
   }
   if (config.excludes.length > 0 && !config.only) {
     config.excludes = config.excludes.map(exclude =>
       path.resolve(config.src, exclude)
     );
   }
+
+  config.src = resolveApp(config.src);
+  config.dist = resolveApp(config.dist);
   return config;
 }
 module.exports = {

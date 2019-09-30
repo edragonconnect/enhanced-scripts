@@ -1,4 +1,4 @@
-const EnhancedVueLoaderPlugin = require("../../node_modules/scriptx/EnhancedVueLoaderPlugin");
+const EnhancedVueLoaderPlugin = require("../../node_modules/enhanced-scripts/EnhancedVueLoaderPlugin");
 const path = require("path");
 module.exports = () => {
   return {

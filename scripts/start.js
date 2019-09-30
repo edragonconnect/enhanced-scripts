@@ -8,8 +8,10 @@ const copyAssets = require("../copyAssets");
 const watcher = require("../watcher");
 const path = require("path");
 const paths = require("../config/paths");
+const { makeBuildDirectory } = require("../makeBuildDirectory");
 require("../config/env");
 checkDependencies("start").then(async apps => {
+  makeBuildDirectory();
   let applications = await Promise.all(apps);
   applications = applications.map(app => ({
     config: createConfig("development", app),

@@ -6,7 +6,14 @@ const checkDenpendencies = require("../checkDependencies");
 const compile = require("../createCompiler");
 const copyAssets = require("../copyAssets");
 const createConfig = require("../createConfig");
+const {
+  makeBuildDirectory,
+  cleanBuildDirectory
+} = require("../makeBuildDirectory");
 checkDenpendencies("build").then(async applications => {
+  makeBuildDirectory();
+  cleanBuildDirectory();
+  
   let compilations = 0;
   applications.forEach(async item => {
     const application = await item;

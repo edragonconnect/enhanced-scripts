@@ -4,15 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "scriptx build  --use-config config.yaml",
-    "start": "scriptx start --dist _build --src  apps",
-    "clean": "rm -rf node_modules/scriptx && yarn upgrade scriptx &&  rm -rf _build && yarn build"
+    "build": "enhanced-scripts build  --use-config config.yaml",
+    "start": "enhanced-scripts start --dist _build --src  apps",
+    "clean": "rm -rf node_modules/enhanced-scripts && yarn upgrade enhanced-scripts &&  rm -rf _build && yarn build"
   },
   "ignored_paths": [
     "project_42"
   ],
   "dependencies": {
-    "scriptx": "file:.."
+    "enhanced-scripts": "file:.."
   },
   "homepage": "/_build"
 }

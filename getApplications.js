@@ -31,25 +31,6 @@ function validateApplicationPackage(pkg, file, entry) {
   }
   return isValid;
 }
-
-function makeBuildDir(should, script) {
-  if (should) {
-    try {
-      !fs.existsSync(paths.config.dist) && fs.ensureDirSync(paths.config.dist);
-    } catch (error) {}
-  }
-  if (script === "build" && paths.config.cleanLastBuild && should) {
-    try {
-      utils.info(
-        "Clean up build folder " +
-          utils.chalk.green(paths.config.dist) +
-          " before run " +
-          utils.chalk.green(script)
-      );
-      fs.emptyDirSync(paths.config.dist);
-    } catch (error) {}
-  }
-}
 module.exports = function getApplications(script) {
   utils.info(
     "Read all `package.json` from " + utils.chalk.green(paths.config.src)
@@ -71,23 +52,22 @@ module.exports = function getApplications(script) {
   }
   const ignore = paths.config.ignore;
   if (ignore.length > 0) {
-    const ignored = ignore.map(item => `       ${item}`).join("\n");
     utils.warn(
-      `These packages will not be resovled as webpack entry but still will be compiled:\n${ignored}`
+      `These packages will not be resovled as webpack entry but still will be compiled:\n${ignore
+        .map(item => `       ${item}`)
+        .join("\n")}`
     );
     packages = packages.filter(packagePath => {
-      const dir = path.parse(packagePath).dir;
-      return !ignore.includes(dir);
+      const dirname = path.dirname(packagePath);
+      return !ignore.includes(dirname);
     });
   }
-
   const excludes = paths.config.excludes;
   if (excludes.length > 0) {
     const displayExcludes = excludes.map(item => `       ${item}`).join("\n");
     utils.warn(`These Applications will not be compiled:\n${displayExcludes}`);
     packages = packages.filter(app => {
-      let dir = path.parse(app).dir;
-      return !excludes.includes(dir);
+      return !excludes.includes(path.dirname(app));
     });
   }
 
@@ -112,7 +92,6 @@ module.exports = function getApplications(script) {
     };
   });
   packages = packages.filter(item => !utils.isUndef(item));
-  makeBuildDir(packages.length > 0, script);
   if (packages.length <= 0) {
     utils.print();
     utils.error(

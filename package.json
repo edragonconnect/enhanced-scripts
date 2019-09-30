@@ -1,7 +1,17 @@
 {
   "name": "enhanced-scripts",
-  "version": "1.1.20",
-  "main": "index.js",
+  "version": "1.1.21",
+  "bin": {
+    "enhanced-scripts": "./bin/enhanced-scripts.js"
+  },
+  "scripts": {
+    "postinstall": "rm -rf ./example",
+    "demo:start": "cd ./examples && rm -rf node_modules &&  rm -rf _build &&  yarn  && yarn start",
+    "demo:build": "cd ./examples && rm -rf node_modules &&  rm -rf _build &&  yarn  && yarn build"
+  },
+  "engines": {
+    "node": ">=8.10"
+  },
   "dependencies": {
     "@babel/core": "7.5.5",
     "@babel/preset-env": "7.5.5",
@@ -54,12 +64,16 @@
     "webpack-merge": "4.2.2",
     "yaml": "1.6.0"
   },
-  "bin": {
-    "scriptx": "./bin/scriptx.js"
-  },
-  "scripts": {
-    "postinstall": "rm -rf ./example",
-    "clean": "cd ./example && rm -rf node_modules && yarn && rm -rf _build ",
-    "start": "cd ./example && yarn start"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
