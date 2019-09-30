@@ -6,6 +6,7 @@ if (utils.dryRequire(paths.setupCopyAssets)) {
 }
 module.exports = function copyAssets({ mode, name, firstCompilation }) {
   if (typeof setupCopyAssets === "function") {
+    utils.warn("Using setupCopyAssets.js => " + paths.setupCopyAssets);
     setupCopyAssets({
       mode,
       name: name,

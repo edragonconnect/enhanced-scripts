@@ -1,11 +1,28 @@
 # Enhanced Scripts
 
+> 此项目是基于 [react-scripts](https://github.com/facebook/create-react-app/tree/master/packages/react-scripts) 修改而来，当中融合了[Elixir Phoenix Umbrella 项目结构](https://medium.com/@cedric_30386/how-to-build-multiple-web-apps-with-elixir-thanks-to-umbrella-part-2-set-up-the-project-800d6d731dbd)
+>
+> 与 Phoenix Umbrella 不同的是，每个`enhanced-scripts`都可以管理自己的项目依赖，不会出现依赖版本冲突的问题
+
+### Examples
+
+    ```bash
+
+        git clone https://github.com/Fi2zz/enhanced-scripts.git
+
+        cd enhanced-scripts && node examples start
+        或
+
+        cd enhanced-scripts && node examples build
+
+    ```
+
 ### 项目结构
 
     project_root
-    |-webpack.confi.js //如果有
+    |-webpack.config.js //如果有
     |-<build-config>.yaml //如果有
-    |-<src_dir>
+    |-apps
     | |-<app_name>
     | |--index.js
     | |--package.json
@@ -13,24 +30,40 @@
 
 ### 安装
 
+yarn
+
 ```bash
 yarn add https://github.com/Fi2zz/enhanced-scripts.git
-npm install https://github.com/Fi2zz/enhanced-scripts.git
+```
+
+npm
+
+```bash
+  npm install https://github.com/Fi2zz/enhanced-scripts.git
 ```
 
 ### 命令
 
 ```bash
-scriptx build  //production build
-scriptx start  //watch <src-directory>,not dev-server
+enhanced-scripts build
+//运行build命令，production mode
+
+enhanced-scripts start
+//development mode
+//监听<project_root>/apps/<child_app_dir>
+//目前没有dev-server
+
 ```
+
+> NOTE: `enhanced-scripts` 目前没有提供 `init`或`create`命令
+> `enhanced-scripts build` 和 `enhanced-scripts start` 都会自动安装每个子项目的依赖，
+> 但 `enhanced-scripts build`会先清除掉子项目的 `node_modules`,目的是确保依赖能被正确的解析
 
 ### 命令选项
 
     --dist <path/to/dist>  //产物目录
-    --only  <app-name> //只编译某个项目
+    --only  <child_app_name> //只编译某个项目
     --clean //清除上次产出
-    --src   <src-directory> //项目源目录，默认 `apps`
     --use-config <path/to/config.yaml>， Yaml配置文件
     --source-map //是否产生source-map文件, YES | NO,默认YES
 
@@ -51,19 +84,17 @@ scriptx start  //watch <src-directory>,not dev-server
 excludes:
   - <example> # 不被编译的项目
 dist: # 产物目录,优先使用命令行的 `--dist` 选项,默认值 `build`,
-clean_last_build: # 是否清除上次产出目录, 可选值:YES|NO,默认值 `YES`
-src: # 项目源目录，优先使用命令行的 `--src` 选项,默认值 `apps`
-generate_source_map: # 是否生成source map ,可选值:YES|NO, 默认值,`YES`
-only: #<app-name> //只编译某个项目
+clean_last_build: YES # 是否清除上次产出目录, 可选值:YES|NO,默认值 `YES`
+generate_source_map: YES # 是否生成source map ,可选值:YES|NO, 默认值,`YES`
+only: some_child_app #只编译某个项目
 ```
 
-### 拷贝未被`url-loader`或 `file-loader`解析的文件
+### 拷贝未被`url-loader`或 `file-loader`解析的静态资源
 
 在项目根目录创建 setupCopyAssets.js，写入以下内容
 
 ```javascript
-module.exports = function({ name?, mode, firstCompilation }) {
-
+module.exports = function({ name, mode, firstCompilation }) {
   //这几个选项可以优化拷贝的性能
   //name, 被拷贝的项目
   //mode, development | production
@@ -81,6 +112,15 @@ module.exports = function({ name?, mode, firstCompilation }) {
 2.用子项目的`webpack.config.js`来合并默认配置,[配置详情](#webpack.config.js)
 
 > 例如: <project_root_dir>/apps/hello/webpack.config.js
+
+配置合并的顺序为
+
+<pre>
+enhanced_scripts_webpack_config => 
+child_app_webpack_config => 
+project_root_webpack_config => 
+final_webpack_config
+</pre>
 
 ### `webpack.config.js`
 
@@ -106,6 +146,7 @@ module.exports = mode => {
           ]
         },
         //使用 EnhancedVueLoaderPlugin
+        //vueLoaderPath => vue-loader的路径
         plugins: [new EnhancedVueLoaderPlugin(vueLoaderPath)]
       };
     },

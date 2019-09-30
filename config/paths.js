@@ -33,15 +33,18 @@ function getBuildConfig() {
       : null;
   }
   const file = getAppBuildConfigFile();
+  const srcName = "apps";
+
+  const dist = utils.get(yarg.argv, "dist", "build");
   const config = {
     excludes: [],
     only: utils.get(yarg.argv, "only", null),
-    dist: utils.get(yarg.argv, "dist", "build"),
-    src: utils.get(yarg.argv, "src", "apps"),
+    dist: resolveApp(dist),
     cleanLastBuild: utils.get(yarg.argv, "clean", "YES") === "YES",
     generateSourceMap: utils.get(yarg.argv, "sourceMap", "YES") === "YES",
     file: null,
-    ignore: []
+    ignore: [],
+    src: resolveApp(srcName)
   };
 
   if (file) {
@@ -49,9 +52,7 @@ function getBuildConfig() {
       const json = yaml.parse(fs.readFileSync(file).toString());
       if (json) {
         const only = utils.get(json, "only", null);
-
-        config.dist = utils.get(json, "dist", null) || config.dist;
-        config.src = utils.get(json, "src", null) || config.src;
+        const dist = utils.get(json, "dist", null);
         const sourceMap = utils.get(json, "generate_source_map", null);
         const cleanLastBuild = utils.get(json, "clean_last_build", null);
         const excludes = utils.get(json, "excludes", null);
@@ -67,20 +68,21 @@ function getBuildConfig() {
         if (only) {
           config.only = only;
         }
+        if (dist) {
+          config.dist = resolveApp(dist);
+        }
         config.file = file;
       }
     } catch (error) {}
   }
-  let rawSrc = config.src;
 
-  let ignore = getIgnoredPaths(appPackageJson);
-
+  const ignore = getIgnoredPaths(appPackageJson);
   if (ignore.length) {
     config.ignore = ignore.map(ignore => {
-      if (ignore.includes(rawSrc)) {
+      if (ignore.startsWith(srcName) || ignore.startsWith(`/${srcName}`)) {
         return resolveApp(ignore);
       }
-      return path.resolve(appDirectory, rawSrc, ignore);
+      return path.resolve(appDirectory, srcName, ignore);
     });
   }
   if (config.excludes.length > 0 && !config.only) {
@@ -88,9 +90,6 @@ function getBuildConfig() {
       path.resolve(config.src, exclude)
     );
   }
-
-  config.src = resolveApp(config.src);
-  config.dist = resolveApp(config.dist);
   return config;
 }
 module.exports = {

@@ -1,13 +1,8 @@
 {
   "name": "enhanced-scripts",
-  "version": "1.1.21",
+  "version": "1.1.22",
   "bin": {
     "enhanced-scripts": "./bin/enhanced-scripts.js"
-  },
-  "scripts": {
-    "postinstall": "rm -rf ./example",
-    "demo:start": "cd ./examples && rm -rf node_modules &&  rm -rf _build &&  yarn  && yarn start",
-    "demo:build": "cd ./examples && rm -rf node_modules &&  rm -rf _build &&  yarn  && yarn build"
   },
   "engines": {
     "node": ">=8.10"
@@ -16,12 +11,10 @@
     "@babel/core": "7.5.5",
     "@babel/preset-env": "7.5.5",
     "@svgr/webpack": "4.3.2",
-    "anymatch": "1.3.0",
     "babel-loader": "8.0.6",
     "babel-plugin-named-asset-import": "0.3.3",
     "babel-plugin-syntax-dynamic-import": "6.18.0",
     "babel-preset-react-app": "9.0.1",
-    "camelcase": "^5.2.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
     "chalk": "2.4.2",
     "cross-spawn": "7.0.0",
@@ -31,12 +24,9 @@
     "file-loader": "3.0.1",
     "fs-extra": "7.0.1",
     "glob": "7.1.4",
-    "glob-parent": "3.0.1",
-    "gzip-size": "5.1.1",
     "identity-obj-proxy": "3.0.0",
     "is-wsl": "^1.1.0",
     "lodash": "4.17.15",
-    "md5": "2.2.1",
     "mini-css-extract-plugin": "0.5.0",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "path-is-absolute": "1.0.1",
@@ -53,10 +43,8 @@
     "resolve": "1.12.0",
     "resolve-url-loader": "3.1.0",
     "sass-loader": "7.2.0",
-    "semver": "6.3.0",
     "style-loader": "1.0.0",
     "terser-webpack-plugin": "1.4.1",
-    "ts-pnp": "1.1.2",
     "url-loader": "2.1.0",
     "webpack": "4.39.3",
     "webpack-cli": "3.3.7",

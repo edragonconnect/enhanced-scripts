@@ -16,17 +16,20 @@ const asyncSpawn = (
     });
   });
 };
+const path = require("path");
 const scripts = ["start", "build"];
 const script = process.argv.slice(2).find(x => scripts.includes(x));
 const scriptArgvs = process.argv.filter((_, index) => index > 2) || [];
 const cleanArgv = process.argv.pop() === "--clean";
 async function runner() {
-  console.log("Removing _build");
+  console.log("Removing " + path.resolve(__dirname, "_build"));
   await asyncSpawn("rm", ["-rf", "_build"]);
   if (cleanArgv) {
-    console.log("Removing node_modules");
+    console.log("Removing " + path.resolve(__dirname, "node_modules"));
     await asyncSpawn("rm", ["-rf", "node_modules"]);
-    console.log("Installing packages...");
+    console.log(
+      "Installing packages to " + path.resolve(__dirname, "node_modules")
+    );
     await asyncSpawn("yarn");
   }
   if (script) {

@@ -8,8 +8,9 @@ module.exports = async function checkDependencies(script) {
   utils.print();
   const isBuildScript = script === "build";
   return getApplications(script).map(async application => {
-    const { package, name, file } = application;
+    const { package, file } = application;
     const directory = path.dirname(file);
+    const name = path.basename(directory);
     const node_modules = path.resolve(directory, "node_modules");
     checkPackageOtherDeps(package);
     const hasDependencies = checkPackageDeps(package, name);
